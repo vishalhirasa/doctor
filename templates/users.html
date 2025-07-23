@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Registered Users - Registration App{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3><i class="bi bi-people me-2"></i>Registered Users</h3>
+                    <span class="badge bg-primary">{{ users|length }} users</span>
+                </div>
+                <div class="card-body">
+                    {% if users %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th><i class="bi bi-hash me-1"></i>ID</th>
+                                        <th><i class="bi bi-person me-1"></i>Name</th>
+                                        <th><i class="bi bi-at me-1"></i>Username</th>
+                                        <th><i class="bi bi-envelope me-1"></i>Email</th>
+                                        <th><i class="bi bi-telephone me-1"></i>Phone</th>
+                                        <th><i class="bi bi-calendar me-1"></i>Age</th>
+                                        <th><i class="bi bi-gender-ambiguous me-1"></i>Gender</th>
+                                        <th><i class="bi bi-globe me-1"></i>Country</th>
+                                        <th><i class="bi bi-envelope-heart me-1"></i>Newsletter</th>
+                                        <th><i class="bi bi-clock me-1"></i>Registered</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ user.id }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-2">
+                                                    {{ user.first_name[0]|upper }}{{ user.last_name[0]|upper }}
+                                                </div>
+                                                <div>
+                                                    <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <code>{{ user.username }}</code>
+                                        </td>
+                                        <td>
+                                            <a href="mailto:{{ user.email }}" class="text-decoration-none">
+                                                {{ user.email }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="tel:{{ user.phone }}" class="text-decoration-none">
+                                                {{ user.phone }}
+                                            </a>
+                                        </td>
+                                                                <td>
+                            {% set birth_year = user.date_of_birth.split('-')[0]|int %}
+                            {% set current_year = 2025 %}
+                            {{ current_year - birth_year }} years
+                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ user.gender|title }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">{{ user.country|upper }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if user.newsletter %}
+                                                <i class="bi bi-check-circle-fill text-success" title="Subscribed"></i>
+                                            {% else %}
+                                                <i class="bi bi-x-circle text-muted" title="Not subscribed"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ user.registered_at }}</small>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Statistics Cards -->
+                        <div class="row mt-4">
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-people display-4 mb-2"></i>
+                                        <h4>{{ users|length }}</h4>
+                                        <small>Total Users</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-envelope-heart display-4 mb-2"></i>
+                                        <h4>{{ users|selectattr('newsletter')|list|length }}</h4>
+                                        <small>Newsletter Subscribers</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-person-fill display-4 mb-2"></i>
+                                        <h4>{{ users|selectattr('gender', 'equalto', 'male')|list|length }}</h4>
+                                        <small>Male Users</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-person-fill display-4 mb-2"></i>
+                                        <h4>{{ users|selectattr('gender', 'equalto', 'female')|list|length }}</h4>
+                                        <small>Female Users</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-person-x display-1 text-muted mb-3"></i>
+                            <h4 class="text-muted">No Users Registered Yet</h4>
+                            <p class="text-muted">Be the first to join our community!</p>
+                            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus me-2"></i>Register Now
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+</style>
+{% endblock %}
